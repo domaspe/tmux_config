@@ -386,6 +386,10 @@ tmux_conf_urlscan_options="--compact --dedupe"
 # increase history size
 #set -g history-limit 10000
 
+# start window and pane numbering from 1
+set -g base-index 1
+setw -g pane-base-index 1
+
 # start with mouse mode enabled
 set -g mouse on
 
@@ -403,8 +407,8 @@ bind -T copy-mode-vi PageDown          send-keys -X page-down
 bind -T copy-mode-vi PageUp            send-keys -X page-up
 
 # reduce mouse wheel scroll from 5 to 2 rows per tick
-bind -T copy-mode-vi WheelUpPane select-pane \; send-keys -X -N 2 scroll-up
-bind -T copy-mode-vi WheelDownPane select-pane \; send-keys -X -N 2 scroll-down
+bind -T copy-mode-vi WheelUpPane select-pane \; send-keys -X -N 3 scroll-up
+bind -T copy-mode-vi WheelDownPane select-pane \; send-keys -X -N 3 scroll-down
 
 # do not exit copy mode on mouse drag end, copy on left click instead
 unbind -T copy-mode-vi MouseDragEnd1Pane
