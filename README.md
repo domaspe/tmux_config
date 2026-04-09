@@ -47,14 +47,6 @@ Original: https://marceloborges.dev/posts/4/#installing-plugins
 | `` `\| `` | Split vertically (current dir) |
 | `` `m `` | Maximize/restore pane |
 
-### Pane Navigation
-| Key | Action |
-|-----|--------|
-| `Alt-Left` | Smart left (pane → window) |
-| `Alt-Right` | Smart right (pane → window) |
-| `Alt-Up` | Pane up |
-| `Alt-Down` | Pane down |
-
 ### Pane Resizing
 | Key | Action |
 |-----|--------|
@@ -176,10 +168,9 @@ Session management is powered by **fzf** and **sesh** ([joshmedeski/sesh](https:
 - `` `a ``: General AI assistant popup
 - `a` in copy mode: Send selection to AI
 
-### Smart Navigation
-- `Alt-Left/Right`: Navigate panes, switch windows at edges
-- Automatically handles screen boundaries
-- Works seamlessly with vim splits via vim-tmux-navigator
+### Pane Navigation
+- Use **Ctrl+h/j/k/l** (via vim-tmux-navigator plugin) for pane navigation
+- Works seamlessly with vim splits
 
 ### Window Behavior
 - Windows start at index 1
