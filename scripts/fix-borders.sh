@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 # Undo a window-local pane border color that a tool (Claude Code) left behind,
 # which hides the normal borders. A window-local option outranks the global one
-# and a tmux reload does not clear it, so it has to be unset per window; then
-# term-theme.zsh repaints the colors for the look that is on.
+# and a tmux reload does not clear it, so it has to be unset per window.
 set -u
 
 tmux list-windows -a -F '#{session_name}:#{window_index}' | while IFS= read -r win; do
@@ -10,6 +9,6 @@ tmux list-windows -a -F '#{session_name}:#{window_index}' | while IFS= read -r w
   tmux set-option -uw -t "$win" pane-active-border-style
 done
 
-zsh -c 'source ~/.config/zsh/term-theme.zsh 2>/dev/null && zshrc_term_borders' || true
+"$(dirname "$0")/theme.sh" apply
 
 tmux display-message "pane borders reset to theme ✓"
