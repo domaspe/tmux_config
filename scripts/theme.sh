@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 set -eu
 
-# ----- macOS variant: Ghostty follows the system appearance, so mode() reads
-# AppleInterfaceStyle. main's variant reads Windows Terminal's settings.json
-# and also toggles (origin/main:scripts/theme.sh) -----
+# Ghostty follows the macOS system appearance, so mode() reads AppleInterfaceStyle.
 
 mode() {
   if defaults read -g AppleInterfaceStyle 2>/dev/null | grep -qF Dark; then
