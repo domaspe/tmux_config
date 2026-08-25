@@ -77,6 +77,7 @@ claude_theme() {
 apply() {
   tmux has-session 2>/dev/null || return 0
   local m="${1:-$(mode)}"
+  tmux set-option -g @theme "$m"
   if [ "$m" = dark ]; then
     tmux set-option -g pane-border-style        "fg=#6f5c69,reverse"
     tmux set-option -g pane-active-border-style "fg=#d68ebb,reverse,bold"
