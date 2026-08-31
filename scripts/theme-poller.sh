@@ -11,5 +11,5 @@ trap cleanup INT TERM
 
 while true; do
   "$HOME/.config/tmux/scripts/theme.sh" apply
-  sleep 7
+  sleep 5
 done
