@@ -9,6 +9,4 @@ tmux list-windows -a -F '#{session_name}:#{window_index}' | while IFS= read -r w
   tmux set-option -uw -t "$win" pane-active-border-style
 done
 
-"$(dirname "$0")/theme.sh" apply
-
 tmux display-message "pane borders reset to theme ✓"
