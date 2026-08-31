@@ -3,9 +3,11 @@ set -eu
 
 personalize='HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize'
 
+# reg.exe reads stdin to exhaustion, which would swallow the input of a caller
+# that pipes data through this script, so it is given /dev/null instead.
 mode() {
   local v
-  v="$(reg.exe query "$personalize" /v AppsUseLightTheme 2>/dev/null \
+  v="$(reg.exe query "$personalize" /v AppsUseLightTheme 2>/dev/null </dev/null \
        | tr -d '\r' | awk '/AppsUseLightTheme/ {print $3}')"
   case "$v" in
     0x1) echo light ;;
