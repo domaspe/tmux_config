@@ -14,6 +14,17 @@ implement requested configuration changes.
   theme integration do not conflict
 - Keep answers concise and explain tmux concepts when useful
 
+## Branches
+
+- `main` — WSL: Windows Terminal, `clip.exe`, theme from the Windows registry,
+  scratch-session popup on Alt-f
+- `mac` — macOS: Ghostty, `pbcopy`, theme from `AppleInterfaceStyle`,
+  `tmux-floax` on Alt-f
+
+Work on the branch for the machine you are on. Never port the other machine's
+platform code across, never add a check that detects the machine, never merge
+the branches.
+
 ## Context
 
 - Tmux config: `~/.config/tmux/`
