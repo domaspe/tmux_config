@@ -29,12 +29,17 @@ claude_theme() {
 # Owns every themed color: pane borders and the status line. tmux.conf sets none
 # of them, so they survive a config reload; only a new server needs the first
 # apply, which tmux.conf runs.
-# The status line is filled like a pane border: the bar takes the active border
-# color, the current window a darker shade of it so it stays visible. Its text is
-# the terminal background color, which is exactly what the glyphs of a reversed
-# border are drawn in: #F7F7F7 in Alabaster, #282A36 in Snazzy. Written as hex,
-# not as the names white/black, because Alabaster maps white to #BBBBBB grey and
-# neither name is tied to the scheme's background.
+# The status line takes each theme's blue, not the border color, so the bar reads
+# as its own surface next to the pink (Snazzy) and sage (Alabaster) borders. The
+# bar is that blue pushed away from the text - darkened in Snazzy, lightened in
+# Alabaster - and the current window is the blue itself, so the tab stands out as
+# a block. Text is the theme's own text / inverseText color, whichever contrasts
+# with the fill it sits on; every pair is at least 5:1. Written as hex, not as the
+# names white/black, because Alabaster maps white to #BBBBBB grey and neither name
+# is tied to the scheme's background.
+# window-style carries the scheme's background so tmux answers a program's
+# background query (OSC 11, used by hunk) with the current color; without it tmux
+# answers with the color the terminal had when the client attached.
 # Returns early when the mode is unchanged, because the poller calls this every
 # few seconds and each claude_theme write retriggers Claude Code's file watcher.
 apply() {
@@ -47,14 +52,16 @@ apply() {
     claude_theme snazzy.json
     tmux set-option -g pane-border-style        "fg=#6f5c69,reverse"
     tmux set-option -g pane-active-border-style "fg=#d68ebb,reverse,bold"
-    tmux set-option -g status-style             "bg=#d68ebb,fg=#282a36"
-    tmux set-option -g window-status-current-style "bg=#b0679a,fg=#282a36,bold"
+    tmux set-option -g status-style             "bg=#2b5164,fg=#eff0eb"
+    tmux set-option -g window-status-current-style "bg=#57c7ff,fg=#282a36,bold"
+    tmux set-option -g window-style             "bg=#282a36"
   else
     claude_theme alabaster.json
     tmux set-option -g pane-border-style        "fg=#c2d0c4,reverse"
     tmux set-option -g pane-active-border-style "fg=#7fa98c,reverse,bold"
-    tmux set-option -g status-style             "bg=#7fa98c,fg=#f7f7f7"
-    tmux set-option -g window-status-current-style "bg=#547f63,fg=#f7f7f7,bold"
+    tmux set-option -g status-style             "bg=#b6c0d8,fg=#434343"
+    tmux set-option -g window-status-current-style "bg=#325cc0,fg=#f7f7f7,bold"
+    tmux set-option -g window-style             "bg=#f7f7f7"
   fi
 }
 
