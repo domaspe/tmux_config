@@ -20,16 +20,16 @@ the same; this file mirrors the live key tables.
 - `C-j` — `move pane down (passes C-j to Neovim when open)`
 - `C-k` — `move pane up (passes C-k to Neovim when open)`
 - `C-l` — `move pane right (passes C-l to Neovim when open)`
-- `M-0` — `move current window right`
+- `M-0` — `next window`
 - `M-1` — `select-window -t 1`
 - `M-2` — `select-window -t 2`
 - `M-3` — `select-window -t 3`
 - `M-4` — `select-window -t 4`
 - `M-5` — `select-window -t 5`
 - `M-6` — `select-window -t 6`
-- `M-7` — `previous window`
-- `M-8` — `next window`
-- `M-9` — `move current window left`
+- `M-7` — `move current window left`
+- `M-8` — `move current window right`
+- `M-9` — `previous window`
 - `M-f` — `if-shell -F "#{==:#{session_name},scratch}" { detach-client } { display-popup -E -S fg=magenta -b rounded -h "50%" -w "50%" "unset TMUX; tmux new-session -d -s scratch 2>/dev/null; tmux set-option -t scratch status off; tmux set-option -t scratch detach-on-destroy on; exec tmux attach-session -t scratch" }`
 - `M-l` — `send-keys "ls -la" Enter`
 - `PPage` — `if-shell -F "#{alternate_on}" "send-keys PPage" "copy-mode -e ; send-keys -X halfpage-up"`
