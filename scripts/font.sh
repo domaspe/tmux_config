@@ -33,10 +33,14 @@ open(path, "w", encoding="utf-8").write(new)
 }
 
 toggle() {
-  local next
-  [ "$(current)" = "$laptop" ] && next="$external" || next="$laptop"
+  local next screen
+  if [ "$(current)" = "$laptop" ]; then
+    next="$external" screen="external monitor, 150%"
+  else
+    next="$laptop" screen="laptop, 125%"
+  fi
   resize "$next"
-  tmux display-message "font size $next ✓"
+  tmux display-message "font size $next ✓ for $screen"
 }
 
 case "${1:-}" in
