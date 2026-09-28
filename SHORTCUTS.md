@@ -20,19 +20,18 @@ the same; this file mirrors the live key tables.
 - `C-j` — `move pane down (passes C-j to Neovim when open)`
 - `C-k` — `move pane up (passes C-k to Neovim when open)`
 - `C-l` — `move pane right (passes C-l to Neovim when open)`
+- `M-0` — `next window`
 - `M-1` — `select-window -t 1`
 - `M-2` — `select-window -t 2`
 - `M-3` — `select-window -t 3`
 - `M-4` — `select-window -t 4`
 - `M-5` — `select-window -t 5`
 - `M-6` — `select-window -t 6`
-- `M-H` — `previous-window`
-- `M-L` — `next-window`
-- `M-S-Left` — `previous-window`
-- `M-S-Right` — `next-window`
+- `M-7` — `move current window left`
+- `M-8` — `move current window right`
+- `M-9` — `previous window`
 - `M-f` — `run-shell floax.sh`
-- `M-i` — `move current window left`
-- `M-o` — `move current window right`
+- `M-l` — `send-keys "ls -la" Enter`
 - `PPage` — `if-shell -F "#{alternate_on}" "send-keys PPage" "copy-mode -e ; send-keys -X halfpage-up"`
 
 ## Prefix `C-a`
@@ -63,7 +62,6 @@ the same; this file mirrors the live key tables.
 - `M-h` — `run-shell "copycat_mode_start.sh '\\b([0-9a-f]{7,40}|[[:alnum:]]{52}|[0-9a-f]{64})\\b'"`
 - `M-i` — `run-shell "copycat_mode_start.sh '[[:digit:]]{1,3}\\.[[:digit:]]{1,3}\\.[[:digit:]]{1,3}\\.[[:digit:]]{1,3}'"`
 - `M-u` — `run-shell clean_plugins`
-- `O` — `session switcher popup (fzf) (script missing)`
 - `P` — `run-shell menu.sh`
 - `R` — `run-shell " tmux source-file ~/.config/tmux/tmux.conf > /dev/null; tmux display-message 'Sourced ~/.config/tmux/tmux.conf!'"`
 - `Right` — `resize-pane -R 5`
@@ -81,6 +79,7 @@ the same; this file mirrors the live key tables.
 - `m` — `resize-pane -Z`
 - `o` — `last-session (via sesh)`
 - `r` — `source-file ~/.config/tmux/tmux.conf ; display-message "tmux.conf reloaded ☺️"`
+- `t` — `switch-client -T theme`
 - `|` — `split-window -h -c "#{pane_current_path}"`
 
 ### tmux defaults
@@ -156,7 +155,6 @@ the same; this file mirrors the live key tables.
 - `p` — `Select the previous window`
 - `q` — `Display pane numbers`
 - `s` — `Choose a session from a list`
-- `t` — `Show a clock`
 - `w` — `Choose a window from a list`
 - `x` — `Kill the active pane`
 - `z` — `Zoom the active pane`
