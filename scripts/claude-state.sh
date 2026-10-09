@@ -2,10 +2,12 @@
 # Marks what Claude Code is doing, for the window tab number (tmux.conf,
 # @tab_number_format) and the Windows Terminal taskbar icon to show. Claude hooks
 # call it with the pane's new state; tmux hooks call it with "seen" to drop the
-# done marks of the window you just opened, and with "refresh" after a pane or
-# window closes.
+# done marks of the window you just opened and the one you just left, and with
+# "refresh" after a pane or window closes. The theme poller calls it with
+# "sync" every 5 seconds to drop marks of turns that were cancelled.
 #
-# Each pane keeps its own state in @claude_pane_state. The window gets the most
+# Each pane keeps its own state in @claude_pane_state, and the time it was set
+# (epoch milliseconds) in @claude_pane_since. The window gets the most
 # urgent one in @claude_state: waiting > done > working. The names differ
 # because a pane option would hide the window option of the same name in the
 # tab format.
@@ -61,20 +63,52 @@ set_pane() {
     tmux set-option -p -u -t "$TMUX_PANE" @claude_pane_state
   else
     tmux set-option -p -t "$TMUX_PANE" @claude_pane_state "$1"
+    tmux set-option -p -t "$TMUX_PANE" @claude_pane_since "$(date +%s%3N)"
   fi
   mark_window "$(tmux display-message -p -t "$TMUX_PANE" '#{window_id}')"
   taskbar
 }
 
+# Drops the done marks of the given windows. A hook passes an empty id when
+# there is no window you left; skip it.
 seen() {
-  local window="$1" pane state
-  tmux list-panes -t "$window" -F '#{pane_id} #{@claude_pane_state}' | while read -r pane state; do
-    if [ "$state" = done ]; then
-      tmux set-option -p -u -t "$pane" @claude_pane_state
-    fi
+  local window pane state
+  for window in "$@"; do
+    [ -n "$window" ] || continue
+    tmux list-panes -t "$window" -F '#{pane_id} #{@claude_pane_state}' | while read -r pane state; do
+      if [ "$state" = done ]; then
+        tmux set-option -p -u -t "$pane" @claude_pane_state
+      fi
+    done
+    mark_window "$window"
   done
-  mark_window "$window"
   taskbar
+}
+
+# Drops working and waiting marks that no hook will replace. A cancelled turn
+# (Esc, a rejected tool) runs no Stop hook, so its pane keeps the mark. Claude
+# Code writes each session's status and tmux pane to
+# ~/.claude/sessions/<pid>.json; a session that went idle after the mark was
+# set has no turn running. Files of sessions that have exited stay there and
+# can name the same pane id, so only a live pid counts. The status field is not
+# documented and may change in a later Claude Code version.
+sync() {
+  local marks pane since file pid status updated changed=
+  marks=$(tmux list-panes -a -F '#{pane_id} #{@claude_pane_state} #{@claude_pane_since}' | grep -E '^%[0-9]+ (working|waiting) ') || return 0
+  while read -r pane _ since; do
+    for file in $(grep -l "\"tmux\":\"[^\"]*\.$pane\"" ~/.claude/sessions/*.json || true); do
+      # Claude may be rewriting the file; the next run reads it.
+      read -r pid status updated < <(jq -r '[.pid, .status, .statusUpdatedAt] | @tsv' "$file" 2>/dev/null) || continue
+      kill -0 "$pid" 2>/dev/null || continue
+      # Marks set before @claude_pane_since existed have no time: any idle counts.
+      if [ "$status" = idle ] && [ "$updated" -gt "${since:-0}" ]; then
+        tmux set-option -p -u -t "$pane" @claude_pane_state
+        mark_window "$(tmux display-message -p -t "$pane" '#{window_id}')"
+        changed=1
+      fi
+    done
+  done <<<"$marks"
+  [ -z "$changed" ] || taskbar
 }
 
 refresh() {
@@ -87,7 +121,8 @@ refresh() {
 
 case "${1:-}" in
   working|waiting|done|clear) set_pane "$1" ;;
-  seen) seen "${2:?window id}" ;;
+  seen) shift; seen "$@" ;;
   refresh) refresh ;;
-  *) echo "usage: ${0##*/} working|waiting|done|clear | seen <window-id> | refresh" >&2; exit 2 ;;
+  sync) sync ;;
+  *) echo "usage: ${0##*/} working|waiting|done|clear | seen <window-id>... | refresh | sync" >&2; exit 2 ;;
 esac
