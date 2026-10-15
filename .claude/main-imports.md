@@ -5,8 +5,9 @@ done.
 
 ## Standing decisions
 
-- Status bar colors: keep mac's Adwaita colors and yellow zoom styles; don't adopt
-  main's palette or its underline-only zoom. (2026-09-25)
+- Status bar: keep mac's "Blocks" design (Adwaita colors; solid accent = selected,
+  tinted yellow/orange = zoomed, no window flags); don't adopt main's palette, bar
+  layout or underline-only zoom. (2026-09-28)
 - Font-size toggle (`prefix t f`, `scripts/font.sh`): skip; Ghostty has Cmd+= /
   Cmd+- / Cmd+0. (2026-09-25)
 
@@ -30,3 +31,11 @@ done.
 - a81f872 partial — ported `M-7`/`M-8`/`M-9`/`M-0`, their unbinds, `unbind -q O`,
   `window-style` background and comments. `shortcuts.sh`, prefix `C-a` and status-top
   were already on mac; the status palette was declined.
+- c1131f6 partial — ported `claude-state.sh` without the Windows Terminal OSC 9;4
+  taskbar, the blinking number cell (Adwaita green/yellow/red, blinking to the bar
+  color rather than the tab color), `status-interval 1` and the seen/refresh hooks;
+  mac's `seen` works per pane: focusing a pane (also `after-select-pane`) drops its
+  waiting and done marks, and the focused pane never gets one;
+  Claude hooks added to `~/.claude/settings.json`. Main's separate grey number cell
+  and tab palette declined (Blocks design stays); M-7/8/9/0 swap not ported yet;
+  `.agents/local/` gitignore skipped.

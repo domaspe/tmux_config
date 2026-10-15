@@ -73,7 +73,6 @@ the same; this file mirrors the live key tables.
 - `%` — `split-window -h -c "#{pane_current_path}"`
 - `a` — `last-window`
 - `c` — `new-window -a -c "#{pane_current_path}"`
-- `g` — `last-window`
 - `j` — `Jump to pane location in copy mode`
 - `k` — `display-popup -E -h "100%" -w "90%" "tmux list-keys | fzf"`
 - `m` — `resize-pane -Z`
