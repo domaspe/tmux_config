@@ -37,10 +37,11 @@ claude_theme() {
 # at least 5:1 except Alabaster's purple on its selection color (4.8:1). Written
 # as hex, not as the names white/black, because Alabaster maps white to #BBBBBB
 # grey and neither name is tied to the scheme's background.
-# The Claude state colors (number cell in tmux.conf) are a green, yellow and
-# red at least 5:1 with the digit: Snazzy's own green and yellow, its red
-# lightened from #ff5c57 (4.7:1). Alabaster's yellow takes the dark text, because
-# a yellow dark enough for light text reads as brown.
+# The Claude state colors (number cell in tmux.conf) are yellow for working and
+# red for waiting and done - red is "needs you". Both are at least 5:1 with the
+# digit: Snazzy's own yellow, its red lightened from #ff5c57 (4.7:1).
+# Alabaster's yellow takes the dark text, because a yellow dark enough for light
+# text reads as brown.
 # window-style carries the scheme's background so tmux answers a program's
 # background query (OSC 11, used by hunk) with the current color; without it tmux
 # answers with the color the terminal had when the client attached.
@@ -63,8 +64,8 @@ apply() {
     tmux set-option -g @tab_current_zoomed_style "bg=#ff6ac1,fg=#282a36,bold"
     tmux set-option -g @tab_number_style        "bg=#44475a,fg=#eff0eb"
     tmux set-option -g window-style             "bg=#282a36"
-    tmux set-option -g @claude_working_style    "bg=#5af78e,fg=#282a36"
-    tmux set-option -g @claude_waiting_style    "bg=#f3f99d,fg=#282a36"
+    tmux set-option -g @claude_working_style    "bg=#f3f99d,fg=#282a36"
+    tmux set-option -g @claude_waiting_style    "bg=#ff6e67,fg=#282a36"
     tmux set-option -g @claude_done_style       "bg=#ff6e67,fg=#282a36"
   else
     claude_theme alabaster.json
@@ -77,8 +78,8 @@ apply() {
     tmux set-option -g @tab_current_zoomed_style "bg=#7a3e9d,fg=#f7f7f7,bold"
     tmux set-option -g @tab_number_style        "bg=#bbbbbb,fg=#1c1c1c"
     tmux set-option -g window-style             "bg=#f7f7f7"
-    tmux set-option -g @claude_working_style    "bg=#2a7030,fg=#f7f7f7"
-    tmux set-option -g @claude_waiting_style    "bg=#f5c518,fg=#434343"
+    tmux set-option -g @claude_working_style    "bg=#f5c518,fg=#434343"
+    tmux set-option -g @claude_waiting_style    "bg=#b3261e,fg=#f7f7f7"
     tmux set-option -g @claude_done_style       "bg=#b3261e,fg=#f7f7f7"
   fi
 }

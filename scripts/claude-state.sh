@@ -2,9 +2,10 @@
 # Marks what Claude Code is doing, for the window tab number (tmux.conf,
 # @tab_number_format) and the Windows Terminal taskbar icon to show. Claude hooks
 # call it with the pane's new state; tmux hooks call it with "seen" to drop the
-# done marks of the window you just opened and the one you just left, and with
-# "refresh" after a pane or window closes. The theme poller calls it with
-# "sync" every 5 seconds to drop marks of turns that were cancelled.
+# waiting / done mark of the pane you just focused, and with "refresh" after a
+# pane or window closes. The theme poller calls it with "sync" every 5 seconds
+# to drop marks of turns that were cancelled. A pane you are in never gets a
+# waiting or done mark: you are already looking at it.
 #
 # Each pane keeps its own state in @claude_pane_state, and the time it was set
 # (epoch milliseconds) in @claude_pane_since. The window gets the most
@@ -56,32 +57,36 @@ taskbar() {
   done
 }
 
+# True when the pane is the one a client is looking at: the active pane of the
+# active window of an attached session.
+focused() {
+  [ "$(tmux display-message -p -t "$1" '#{&&:#{session_attached},#{&&:#{window_active},#{pane_active}}}')" = 1 ]
+}
+
 set_pane() {
+  local state="$1"
   # Claude run outside tmux: nothing to mark.
   [ -n "${TMUX_PANE:-}" ] || exit 0
-  if [ "$1" = clear ]; then
+  case "$state" in
+    waiting|done) focused "$TMUX_PANE" && state=clear ;;
+  esac
+  if [ "$state" = clear ]; then
     tmux set-option -p -u -t "$TMUX_PANE" @claude_pane_state
   else
-    tmux set-option -p -t "$TMUX_PANE" @claude_pane_state "$1"
+    tmux set-option -p -t "$TMUX_PANE" @claude_pane_state "$state"
     tmux set-option -p -t "$TMUX_PANE" @claude_pane_since "$(date +%s%3N)"
   fi
   mark_window "$(tmux display-message -p -t "$TMUX_PANE" '#{window_id}')"
   taskbar
 }
 
-# Drops the done marks of the given windows. A hook passes an empty id when
-# there is no window you left; skip it.
+# Drops the waiting / done mark of the pane you just focused.
 seen() {
-  local window pane state
-  for window in "$@"; do
-    [ -n "$window" ] || continue
-    tmux list-panes -t "$window" -F '#{pane_id} #{@claude_pane_state}' | while read -r pane state; do
-      if [ "$state" = done ]; then
-        tmux set-option -p -u -t "$pane" @claude_pane_state
-      fi
-    done
-    mark_window "$window"
-  done
+  local pane="$1"
+  case "$(tmux display-message -p -t "$pane" '#{@claude_pane_state}')" in
+    waiting|done) tmux set-option -p -u -t "$pane" @claude_pane_state ;;
+  esac
+  mark_window "$(tmux display-message -p -t "$pane" '#{window_id}')"
   taskbar
 }
 
@@ -121,8 +126,8 @@ refresh() {
 
 case "${1:-}" in
   working|waiting|done|clear) set_pane "$1" ;;
-  seen) shift; seen "$@" ;;
+  seen) seen "${2:?pane id}" ;;
   refresh) refresh ;;
   sync) sync ;;
-  *) echo "usage: ${0##*/} working|waiting|done|clear | seen <window-id>... | refresh | sync" >&2; exit 2 ;;
+  *) echo "usage: ${0##*/} working|waiting|done|clear | seen <pane-id> | refresh | sync" >&2; exit 2 ;;
 esac

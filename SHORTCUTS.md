@@ -30,6 +30,7 @@ the same; this file mirrors the live key tables.
 - `M-7` — `move current window left`
 - `M-8` — `move current window right`
 - `M-9` — `previous window`
+- `M-P` — `Claude Code: type /plan open`
 - `M-f` — `if-shell -F "#{==:#{session_name},scratch}" { detach-client } { display-popup -E -S fg=magenta -b rounded -h "50%" -w "50%" "unset TMUX; tmux new-session -d -s scratch 2>/dev/null; tmux set-option -t scratch status off; tmux set-option -t scratch detach-on-destroy on; exec tmux attach-session -t scratch" }`
 - `M-l` — `send-keys "ls -la" Enter`
 - `PPage` — `if-shell -F "#{alternate_on}" "send-keys PPage" "copy-mode -e ; send-keys -X halfpage-up"`
