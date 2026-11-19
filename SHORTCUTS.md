@@ -15,6 +15,13 @@ the same; this file mirrors the live key tables.
 
 ### Added or changed
 
+- `C-M-b` — `run-shell "zoom-options.sh out"`
+- `C-M-d` — `run-shell "zoom-options.sh lock"`
+- `C-M-e` — `run-shell "embed.sh embed"`
+- `C-M-f` — `run-shell "zoom-options.sh full"`
+- `C-M-r` — `run-shell "zoom-options.sh reset"`
+- `C-M-s` — `run-shell "zoom-options.sh in"`
+- `C-M-u` — `run-shell "zoom-options.sh unlock"`
 - `C-\` — `go to the last used pane`
 - `C-h` — `move pane left (passes C-h to Neovim when open)`
 - `C-j` — `move pane down (passes C-j to Neovim when open)`
@@ -73,12 +80,14 @@ the same; this file mirrors the live key tables.
 - `%` — `split-window -h -c "#{pane_current_path}"`
 - `a` — `last-window`
 - `c` — `new-window -a -c "#{pane_current_path}"`
+- `h` — `hide pane (to _hidden session)`
 - `j` — `Jump to pane location in copy mode`
 - `k` — `display-popup -E -h "100%" -w "90%" "tmux list-keys | fzf"`
 - `m` — `resize-pane -Z`
 - `o` — `last-session (via sesh)`
 - `r` — `source-file ~/.config/tmux/tmux.conf ; display-message "tmux.conf reloaded ☺️"`
 - `t` — `switch-client -T theme`
+- `u` — `restore a hidden pane`
 - `|` — `split-window -h -c "#{pane_current_path}"`
 
 ### tmux defaults
