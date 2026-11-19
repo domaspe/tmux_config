@@ -5,6 +5,9 @@
 # focused, and with "refresh" after a pane or window closes. A pane you are in
 # never gets a waiting or done mark: you are already looking at it.
 #
+# Focusing a working pane marks it seen in @claude_pane_seen: its tab keeps the
+# working color but stops blinking. A new state from Claude unmarks it.
+#
 # Each pane keeps its own state in @claude_pane_state. The window gets the most
 # urgent one in @claude_state: waiting > done > working. The names differ
 # because a pane option would hide the window option of the same name in the
@@ -23,7 +26,8 @@ most_urgent() {
   done
 }
 
-# Recomputes the window's state from its panes.
+# Recomputes the window's state from its panes. @claude_blink is set while a
+# pane has a state you have not seen.
 mark_window() {
   local window="$1" state
   state=$(tmux list-panes -t "$window" -F '#{@claude_pane_state}' | most_urgent)
@@ -31,6 +35,11 @@ mark_window() {
     tmux set-option -w -t "$window" @claude_state "$state"
   else
     tmux set-option -w -u -t "$window" @claude_state
+  fi
+  if tmux list-panes -t "$window" -F '#{&&:#{@claude_pane_state},#{!:#{@claude_pane_seen}}}' | grep -qx 1; then
+    tmux set-option -w -t "$window" @claude_blink 1
+  else
+    tmux set-option -w -u -t "$window" @claude_blink
   fi
 }
 
@@ -47,6 +56,11 @@ set_pane() {
   case "$state" in
     waiting|done) focused "$TMUX_PANE" && state=clear ;;
   esac
+  # PostToolUse repeats "working" all turn; only a change of state is news.
+  if [ "$state" != "$(tmux display-message -p -t "$TMUX_PANE" '#{@claude_pane_state}')" ]; then
+    tmux set-option -p -u -t "$TMUX_PANE" @claude_pane_seen
+  fi
+  focused "$TMUX_PANE" && tmux set-option -p -t "$TMUX_PANE" @claude_pane_seen 1
   if [ "$state" = clear ]; then
     tmux set-option -p -u -t "$TMUX_PANE" @claude_pane_state
   else
@@ -59,6 +73,7 @@ seen() {
   local pane="$1"
   case "$(tmux display-message -p -t "$pane" '#{@claude_pane_state}')" in
     waiting|done) tmux set-option -p -u -t "$pane" @claude_pane_state ;;
+    working) tmux set-option -p -t "$pane" @claude_pane_seen 1 ;;
   esac
   mark_window "$(tmux display-message -p -t "$pane" '#{window_id}')"
 }
